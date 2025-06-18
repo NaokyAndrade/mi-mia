@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Te amo</title>
+    <style>
+        body {
+            font-family: 'Lucida Console', monospace;
+            background-color: #f5f5dc; /* Beige */
+            color: #333;
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Altura completa de la ventana */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            flex-direction: column;
+            position: relative;
+        }
+        .envoltorio {
+            display: none;
+            background-color: #ffb3d9; /* Rosa pastel */
+            border: 2px solid black;
+            border-radius: 8px;
+            position: relative;
+            width: 300px;
+            height: 200px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: aparecer 0.5s forwards;
+            overflow: hidden;
+        }
+        @keyframes aparecer {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .solapa {
+            position: absolute;
+            top: -20px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background-color: #ffb3d9;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+        }
+        .carta {
+            display: none;
+            background-color: #fff;
+            border: 2px solid black;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 600px;
+            max-height: 800px;
+            overflow-y: auto;
+            margin: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: bajar 0.5s forwards;
+            color: #333;
+            font-family: 'Lucida Console', monospace;
+        }
+        @keyframes bajar {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .boton {
+            width: 100px;
+            height: 50px;
+            background-color: #ffb3d9;
+            color: white;
+            border: 2px solid black;
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: 'Lucida Console', monospace;
+            cursor: pointer;
+            text-align: center;
+            margin: 20px auto;
+            display: block;
+            transition: background-color 0.3s ease;
+            position: relative;
+            overflow: visible;
+        }
+        .boton:hover {
+            background-color: #ff99cc;
+        }
+        .imagen-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+        .corazon {
+            position: absolute;
+            font-size: 24px;
+        }
+        .corazon.tl {
+            top: 10px;
+            left: 10px;
+        }
+        .corazon.tr {
+            top: 10px;
+            right: 10px;
+        }
+        /* Floating message styling */
+        .mensaje-flotante {
+            position: fixed;
+            color: #ff3399;
+            font-size: 18px;
+            font-weight: bold;
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+            text-shadow: 0 0 5px #ff99cc;
+            z-index: 1000;
+            opacity: 1;
+        }
+        @keyframes subirConBalanceo {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--x-move, 0), -160px);
+            }
+        }
+    </style>
+    <script>
+        function mostrarEnvoltorio() {
+            document.getElementById('envoltorio').style.display = 'block';
+            document.getElementById('boton').style.display = 'none';
+            document.getElementById('botonAbrir').style.display = 'block';
+        }
+
+        function abrirCarta() {
+            document.getElementById('envoltorio').style.display = 'none';
+            document.getElementById('carta').style.display = 'block';
+            document.getElementById('botonAbrir').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const botonSinFuncion = document.querySelector('#carta .boton:not(#botonAbrir)');
+            const mensajes = [
+                "Estoy muy orgulloso de ti",
+                "Te amo muchísimo",
+                "Eres increíble mi amorcito",
+                "Gracias por ser tú",
+                "Te admiro mi amor",
+                "Eres mi todo",
+                "¡¡Te amo mi niñita!!",
+                "Mi chochita hermosa",
+                "Eres la mejor",
+                "Siempre estás en mi corazón",
+                "Te amo con mi alma",
+                "Soy tu lobo domesticado",
+                "Soy solo tuyo",
+                "Mi cachetitos lindos <3",
+
+            ];
+
+            botonSinFuncion.addEventListener('click', (e) => {
+                const mensaje = mensajes[Math.floor(Math.random() * mensajes.length)];
+                const mensajeDiv = document.createElement('div');
+                mensajeDiv.className = 'mensaje-flotante';
+                mensajeDiv.textContent = mensaje;
+
+                // Añadir al body primero para poder medir su ancho
+                document.body.appendChild(mensajeDiv);
+
+                // Obtener posición del botón (centro horizontal)
+                const rect = botonSinFuncion.getBoundingClientRect();
+                const botonCenterX = rect.left + rect.width / 2;
+
+                // Obtener ancho del mensaje
+                const mensajeWidth = mensajeDiv.offsetWidth;
+
+                // Colocar el mensaje centrado horizontalmente respecto al botón y justo encima verticalmente
+                mensajeDiv.style.left = (botonCenterX - mensajeWidth / 2) + 'px';
+                mensajeDiv.style.top = rect.top + 'px';
+
+                // Ajustar el origen para que suba desde la base
+                mensajeDiv.style.transformOrigin = '50% 100%';
+
+                // Generar movimiento horizontal aleatorio entre -50px y +50px
+                const randomX = (Math.random() * 100 - 50).toFixed(2) + 'px';
+                mensajeDiv.style.setProperty('--x-move', randomX);
+
+                // Añadir animación de subida y balanceo con variable --x-move
+                mensajeDiv.style.animation = 'subirConBalanceo 2s forwards';
+
+                // Remover después de animación
+                mensajeDiv.addEventListener('animationend', () => {
+                    mensajeDiv.remove();
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <button id="boton" class="boton" onclick="mostrarEnvoltorio()"> Lo Siento </button>
+
+    <!-- Envoltorio de la carta -->
+    <div id="envoltorio" class="envoltorio">
+        <div class="solapa"></div> <!-- Solapa del sobre -->
+    </div>
+
+    <!-- Botón "Abrir" fuera del envoltorio, inicialmente oculto -->
+    <button id="botonAbrir" class="boton" onclick="abrirCarta()" style="display: none;">Abrir</button>
+
+    <!-- Carta de cumpleaños -->
+    <div id="carta" class="carta">
+        <h1> ¡Mi mia!  </h1>
+        <p>
+            Hace unos días fue una fecha muy especial, ya que cumpliste 21 añitos mi amorcito, sé que no pude
+            darte algo ese mismo día, pero es que estuve preparando esto desde antes de tu cumpleaños.
+        </p>
+        <p>
+            Como te dije antes y como ya lo sabes, eres una persona maravillosa y especial para mí.
+            Tu risa, la forma en como me alegras cada dia con un mensaje tuyo, cuando pasamos tiempo juntos,
+            cuando estamos en llamada y hablas de lo que sea (me encanta demasiado escucharte hablar).
+        </p>
+        <p>
+            Me encanta y me siento orgulloso de ti por la mujer en la que te estas convirtiendo,
+            creciendo día a día, y por todas las metas que has completado y por las que aún te faltan por cumplir.
+            sé que tienes un futuro prometedor por delantey espero poder estar ahí para demostrarte todo mi apoyo.
+        </p>
+        <p>
+            No puedo dejar de pensar en ti y en las cosas que hemos compartido juntos, al igual, las cosas que me recuerdan a ti,
+            como cuando veo algo de la kitty, cuando veo un chocolate princesa o un sublime, cuando veo algo que tiene tus colores favoritos,
+            cuando escucho una de las canciones que te dediqué o de las que te canté y te dije que me recordaban a ti,
+            cuando veo una pareja caminando de la mano, cuando veo una de las cosas que me diste o regalaste, cuando veo coraline o 
+            alguna pelicula, personaje o cosa que haga que tu te vengas a mi mente cuando lo veo.
+        </p>
+        <p>
+            Sé que estamos pasando por un momento difícil, pero quiero que sepas que estoy aquí para ti,
+            que estoy aquí para apoyarte en todo lo que necesites.
+        </p>
+        <p>
+            Lo siento por este pequeño detalle y por el retraso, pero espero que te guste esta pequeña sorpresa,
+            que aunque no es mucho, espero que te saque una sonrisa.
+        </p>
+        <p>
+            Lo siento tanto por todo lo que ha pasado en estas ultimas semanas, por no saber como estar,
+            por hablar mal o expresarme mal, por decir cosas de impulsivo o por el momento, sé que no mereces eso,
+            ni nada de lo que he hecho y dije, y solamente quiero que estes bien, que te sientas bien.
+        </p>
+        <p>
+            Perdoname por haberte hecho sentir incomoda y mal conmigo, por haberte hecho sentir que no estoy para ti,
+            por no saber que decirte. Y bueno, solo lo siento mucho por todo, sin más.
+        
+        <p class="firma">
+            Te amo muchísimo, con toda mi alma<br />
+           Atte: Tu Alexander
+        </p>
+
+        <div class="imagen-container">
+            <img src="stich.png" alt="stich" />
+        </div>
+
+        <!-- Botón al final de la carta -->
+        <div style="text-align: center;">
+            <button class="boton">Dale click</button>
+        </div>
+
+        <!-- Corazones en las esquinas -->
+        <div class="corazon tl" aria-hidden="true">❤️</div>
+        <div class="corazon tr" aria-hidden="true">❤️</div>
+    </div>
+</body>
+</html>
+
